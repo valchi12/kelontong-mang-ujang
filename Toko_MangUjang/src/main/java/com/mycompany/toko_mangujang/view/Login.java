@@ -4,6 +4,11 @@
  */
 package com.mycompany.toko_mangujang.view;
 
+import com.mycompany.toko_mangujang.koneksi.Koneksi;
+import com.mycompany.toko_mangujang.model.Akun;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author DEWATA
@@ -36,6 +41,11 @@ public class Login extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         btnLogin.setText("LOGIN");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         txUsername.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -100,12 +110,51 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txUsernameActionPerformed
-        // TODO add your handling code here:
+      
     }//GEN-LAST:event_txUsernameActionPerformed
 
     private void txPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txPasswordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txPasswordActionPerformed
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+    String username = txUsername.getText();
+    String password = txPassword.getText();
+
+    try {
+        var conn = Koneksi.bukaKoneksi();
+        var loginLogic = new com.mycompany.toko_mangujang.logic.auth.Login(conn);
+
+        Akun akun = loginLogic.autentikasi(username, password);
+
+        if (akun != null) {
+            JOptionPane.showMessageDialog(this,
+                    "Login Berhasil! Role: " + akun.getRole(),
+                    "Sukses",
+                    JOptionPane.INFORMATION_MESSAGE);
+            
+            if ("admin".equals(akun.getRole())) {
+                new Produk().setVisible(true);
+            } else {
+                new MenuToko().setVisible(true);
+            }
+            
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Username atau Password Salah",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this,
+                "Error Database: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+    } finally {
+        Koneksi.tutupKoneksi();
+    }
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -151,3 +200,5 @@ public class Login extends javax.swing.JFrame {
     private java.awt.TextField txUsername;
     // End of variables declaration//GEN-END:variables
 }
+
+
