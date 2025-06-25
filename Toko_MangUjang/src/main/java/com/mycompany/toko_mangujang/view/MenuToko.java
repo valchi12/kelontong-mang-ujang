@@ -4,18 +4,43 @@
  */
 package com.mycompany.toko_mangujang.view;
 
-/**
- *
- * @author DEWATA
- */
+import com.mycompany.toko_mangujang.koneksi.Koneksi;
+import com.mycompany.toko_mangujang.logic.customer.BeliBarang;
+import com.mycompany.toko_mangujang.model.Akun;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JOptionPane;
+
 public class MenuToko extends javax.swing.JFrame {
 
     /**
      * Creates new form MenuToko
      */
-    public MenuToko() {
+    private Akun akun; 
+    public MenuToko(Akun akun) {
+        this.akun = akun;
         initComponents();
+        loadProductsToComboBox();
     }
+    
+    private void loadProductsToComboBox() {
+    try (Connection conn = Koneksi.bukaKoneksi()) {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT produk_id, nama_produk FROM produk");
+        while (rs.next()) {
+            int id = rs.getInt("produk_id");
+            String nama = rs.getString("nama_produk");
+            PilihProduk.addItem(id + " - " + nama);
+        }
+    } catch (SQLException e) {
+       
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,11 +62,27 @@ public class MenuToko extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        PilihProduk.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        PilihProduk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PilihProdukActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Harga");
 
         jLabel2.setText("Stok");
+
+        txHarga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txHargaActionPerformed(evt);
+            }
+        });
+
+        txStok.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txStokActionPerformed(evt);
+            }
+        });
 
         btnBeli.setText("BELI");
         btnBeli.addActionListener(new java.awt.event.ActionListener() {
@@ -51,6 +92,12 @@ public class MenuToko extends javax.swing.JFrame {
         });
 
         jLabel3.setText("Kategori");
+
+        txKategori.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txKategoriActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -108,8 +155,72 @@ public class MenuToko extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBeliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeliActionPerformed
-        // TODO add your handling code here:
+     String selected = (String) PilihProduk.getSelectedItem();
+    if (selected != null) {
+        try {
+            int produkId = Integer.parseInt(selected.split(" - ")[0]);
+            int jumlah = 1;
+
+            try (Connection conn = Koneksi.bukaKoneksi()) {
+                BeliBarang beliBarang = new BeliBarang(conn);
+                Map<Integer, Integer> produkDanJumlah = new HashMap<>();
+                produkDanJumlah.put(produkId, jumlah);
+
+                beliBarang.buatTransaksi(akun.getId(), produkDanJumlah);
+
+                JOptionPane.showMessageDialog(this,
+                        "Pembelian berhasil!",
+                        "Sukses",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } 
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error membeli produk: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     }//GEN-LAST:event_btnBeliActionPerformed
+
+    private void PilihProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PilihProdukActionPerformed
+        String selected = (String) PilihProduk.getSelectedItem();
+    if (selected != null) {
+        try {
+            int produkId = Integer.parseInt(selected.split(" - ")[0]);
+            try (Connection conn = Koneksi.bukaKoneksi();
+                 PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT p.harga, p.stok, k.nama_kategori " + 
+                    "FROM produk p JOIN kategori k ON p.kategori_id = k.kategori_id " + 
+                    "WHERE p.produk_id = ?")) {
+
+                stmt.setInt(1, produkId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    txHarga.setText(String.valueOf(rs.getDouble("harga")));
+                    txStok.setText(String.valueOf(rs.getInt("stok")));
+                    txKategori.setText(rs.getString("nama_kategori"));
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error load produk: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    }//GEN-LAST:event_PilihProdukActionPerformed
+    private void txHargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txHargaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txHargaActionPerformed
+
+    private void txStokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txStokActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txStokActionPerformed
+
+    private void txKategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txKategoriActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txKategoriActionPerformed
 
     /**
      * @param args the command line arguments
@@ -141,7 +252,6 @@ public class MenuToko extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MenuToko().setVisible(true);
             }
         });
     }
@@ -157,3 +267,5 @@ public class MenuToko extends javax.swing.JFrame {
     private java.awt.TextField txStok;
     // End of variables declaration//GEN-END:variables
 }
+
+

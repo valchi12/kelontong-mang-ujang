@@ -21,18 +21,16 @@ public class Login {
         this.conn = conn;
     }
 
-    public Akun autentikasi(String emailOrUsername, String password) throws SQLException {
-        String sql = "SELECT * FROM akun WHERE (email = ? OR username = ?) AND password = ?";
+    public Akun autentikasi(String username, String password) throws SQLException {
+        String sql = "SELECT * FROM akun WHERE (username = ?) AND password = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, emailOrUsername);
-            stmt.setString(2, emailOrUsername);
-            stmt.setString(3, password);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 return new Akun(
                         rs.getInt("akun_id"),
-                        rs.getString("email"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("role")
@@ -42,5 +40,4 @@ public class Login {
         return null; 
     }
 }
-
 

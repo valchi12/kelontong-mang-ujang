@@ -43,20 +43,5 @@ public class ManageKategori {
         }
     }
      
-     public void updateKategori(int id, String namaKategori) throws SQLException {
-        String sql = "INSERT INTO kategori (nama_kategori) VALUES (?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, namaKategori);
-            stmt.executeUpdate();
-        }
-    }
-     
-     public void hapusKategori(int id) throws SQLException {
-        String sql = "DELETE FROM kategori WHERE kategori_id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-        }
-    }
 }
 

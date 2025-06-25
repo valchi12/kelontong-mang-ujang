@@ -92,14 +92,12 @@
     <Component class="javax.swing.JComboBox" name="PilihProduk">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Item 1"/>
-            <StringItem index="1" value="Item 2"/>
-            <StringItem index="2" value="Item 3"/>
-            <StringItem index="3" value="Item 4"/>
-          </StringArray>
+          <StringArray count="0"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PilihProdukActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -115,8 +113,14 @@
       </Properties>
     </Component>
     <Component class="java.awt.TextField" name="txHarga">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txHargaActionPerformed"/>
+      </Events>
     </Component>
     <Component class="java.awt.TextField" name="txStok">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txStokActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnBeli">
       <Properties>
@@ -132,6 +136,9 @@
       </Properties>
     </Component>
     <Component class="java.awt.TextField" name="txKategori">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txKategoriActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

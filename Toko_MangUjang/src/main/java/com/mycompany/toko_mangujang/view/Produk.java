@@ -4,6 +4,14 @@
  */
 package com.mycompany.toko_mangujang.view;
 
+import com.mycompany.toko_mangujang.koneksi.Koneksi;
+import com.mycompany.toko_mangujang.logic.admin.ManageBarang;
+import com.mycompany.toko_mangujang.logic.admin.ManageKategori;
+import com.mycompany.toko_mangujang.model.Kategori;
+import java.sql.Connection;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author DEWATA
@@ -15,7 +23,28 @@ public class Produk extends javax.swing.JFrame {
      */
     public Produk() {
         initComponents();
+        loadCategoriesToComboBox();
+
     }
+    
+   
+    private void loadCategoriesToComboBox() {
+        try {
+            Connection conn = Koneksi.bukaKoneksi();
+            ManageKategori manageKategori = new ManageKategori(conn);
+            java.util.List<Kategori> daftarKategori = manageKategori.getAllKategori();
+            ComboBoxKategori.removeAllItems();
+        for (Kategori kategori : daftarKategori) {
+            ComboBoxKategori.addItem(kategori.getId() + " - " + kategori.getNama());
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this,
+            "Gagal load kategori: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
+    }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,6 +90,12 @@ public class Produk extends javax.swing.JFrame {
 
         jLabel5.setText("Kategori : ");
 
+        txNamaProduk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txNamaProdukActionPerformed(evt);
+            }
+        });
+
         txHargaProduk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txHargaProdukActionPerformed(evt);
@@ -75,11 +110,27 @@ public class Produk extends javax.swing.JFrame {
 
         jLabel6.setText("TAMBAH KATEGORI");
 
-        ComboBoxKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboBoxKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
+        ComboBoxKategori.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboBoxKategoriActionPerformed(evt);
+            }
+        });
+
+        txKategori.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txKategoriActionPerformed(evt);
+            }
+        });
 
         jLabel7.setText("Kategori : ");
 
         btnTambahKategori.setText("ADD");
+        btnTambahKategori.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahKategoriActionPerformed(evt);
+            }
+        });
 
         btnHistori.setText("Halaman Histori");
 
@@ -166,7 +217,43 @@ public class Produk extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTambahProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahProdukActionPerformed
-        // TODO add your handling code here:
+    String namaProduk = txNamaProduk.getText().trim();
+    String hargaText = txHargaProduk.getText().trim();
+    String stokText = txStokProduk.getText().trim();
+    String selected = (String) ComboBoxKategori.getSelectedItem();
+     
+    System.out.println("hargaText: " + hargaText + "");
+    System.out.println("stokText: " + stokText + "");
+    System.out.println("selected category: " + selected);
+    
+    if (!namaProduk.isEmpty() && !hargaText.isEmpty() && !stokText.isEmpty() && selected != null) {
+        try {
+            double harga = Double.parseDouble(hargaText);
+            int stok = Integer.parseInt(stokText);
+
+            String[] parts = selected.split(" - ");
+            int kategoriId = Integer.parseInt(parts[0]);
+
+
+            Connection conn = Koneksi.bukaKoneksi();
+            ManageBarang manageBarang = new ManageBarang(conn);
+            manageBarang.tambahBarang(namaProduk, kategoriId, harga, stok);
+
+            JOptionPane.showMessageDialog(this, "Produk berhasil ditambahkan!");
+            
+            txNamaProduk.setText("");
+            txHargaProduk.setText("");
+            txStokProduk.setText("");
+
+            
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Format angka tidak valid (harga atau stok)!", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Gagal Menambahkan Produk", JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Lengkapi semua data produk!");
+    }
     }//GEN-LAST:event_btnTambahProdukActionPerformed
 
     private void txStokProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txStokProdukActionPerformed
@@ -176,6 +263,45 @@ public class Produk extends javax.swing.JFrame {
     private void txHargaProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txHargaProdukActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txHargaProdukActionPerformed
+
+    private void txKategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txKategoriActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txKategoriActionPerformed
+
+    private void btnTambahKategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahKategoriActionPerformed
+        String namaKategori = txKategori.getText().trim();
+
+    if (!namaKategori.isEmpty()) {
+        try {
+            Connection conn = Koneksi.bukaKoneksi();
+            ManageKategori manageKategori = new ManageKategori(conn);
+            manageKategori.tambahKategori(namaKategori);
+            JOptionPane.showMessageDialog(this, "Kategori berhasil ditambahkan!");
+            
+            txKategori.setText("");
+            
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Gagal Menambahkan Kategori", JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Nama Kategori tidak boleh kosong!");
+    }
+    }//GEN-LAST:event_btnTambahKategoriActionPerformed
+
+    private void ComboBoxKategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxKategoriActionPerformed
+    String selected = (String) ComboBoxKategori.getSelectedItem();
+        if (selected != null) {
+        String[] parts = selected.split(" - ");
+            if (parts.length == 2) {
+            int kategoriId = Integer.parseInt(parts[0].trim());
+        }
+     }
+    }//GEN-LAST:event_ComboBoxKategoriActionPerformed
+
+    private void txNamaProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txNamaProdukActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txNamaProdukActionPerformed
 
     /**
      * @param args the command line arguments
@@ -230,3 +356,4 @@ public class Produk extends javax.swing.JFrame {
     private java.awt.TextField txStokProduk;
     // End of variables declaration//GEN-END:variables
 }
+
