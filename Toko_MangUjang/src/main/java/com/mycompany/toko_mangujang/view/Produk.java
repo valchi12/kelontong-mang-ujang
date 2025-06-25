@@ -75,7 +75,7 @@ public class Produk extends javax.swing.JFrame {
 
         jLabel6.setText("TAMBAH KATEGORI");
 
-        ComboBoxKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboBoxKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
 
         jLabel7.setText("Kategori : ");
 
