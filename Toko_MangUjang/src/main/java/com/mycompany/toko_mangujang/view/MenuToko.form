@@ -95,6 +95,9 @@
           <StringArray count="0"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PilihProdukActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -110,8 +113,14 @@
       </Properties>
     </Component>
     <Component class="java.awt.TextField" name="txHarga">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txHargaActionPerformed"/>
+      </Events>
     </Component>
     <Component class="java.awt.TextField" name="txStok">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txStokActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnBeli">
       <Properties>
@@ -127,6 +136,9 @@
       </Properties>
     </Component>
     <Component class="java.awt.TextField" name="txKategori">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txKategoriActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

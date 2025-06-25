@@ -4,6 +4,10 @@
  */
 package com.mycompany.toko_mangujang.view;
 
+import com.mycompany.toko_mangujang.koneksi.Koneksi;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author DEWATA
@@ -39,6 +43,11 @@ public class Register extends javax.swing.JFrame {
         jLabel1.setText("REGISTER");
 
         btnRegister.setText("REGISTER");
+        btnRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisterActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Username");
 
@@ -125,6 +134,35 @@ public class Register extends javax.swing.JFrame {
         new Login().setVisible(true);
         this.dispose(); 
     }//GEN-LAST:event_keLoginMouseClicked
+
+    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
+    String username = txUsername.getText();
+    String password = txPassword.getText();
+
+    try {
+        var conn = Koneksi.bukaKoneksi();
+        var registerLogic = new com.mycompany.toko_mangujang.logic.auth.Register(conn);
+
+        // Default role bisa "customer"
+        registerLogic.registerAkun(username, password, "customer");
+
+        JOptionPane.showMessageDialog(this,
+                "Registrasi Berhasil! Sekarang kamu bisa login.",
+                "Sukses",
+                JOptionPane.INFORMATION_MESSAGE);
+
+        // Arahkan ke Login
+        new Login().setVisible(true);
+        this.dispose();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this,
+                "Error Database: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+    } finally {
+        Koneksi.tutupKoneksi();
+    }
+    }//GEN-LAST:event_btnRegisterActionPerformed
 
     /**
      * @param args the command line arguments

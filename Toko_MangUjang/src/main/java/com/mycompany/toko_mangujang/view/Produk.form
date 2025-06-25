@@ -156,6 +156,9 @@
       </Properties>
     </Component>
     <Component class="java.awt.TextField" name="txNamaProduk">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txNamaProdukActionPerformed"/>
+      </Events>
     </Component>
     <Component class="java.awt.TextField" name="txHargaProduk">
       <Events>
@@ -180,11 +183,17 @@
           </StringArray>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ComboBoxKategoriActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
     </Component>
     <Component class="java.awt.TextField" name="txKategori">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txKategoriActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
       <Properties>
@@ -195,6 +204,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="ADD"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTambahKategoriActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnHistori">
       <Properties>
